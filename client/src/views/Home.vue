@@ -1,15 +1,15 @@
 <template>
-  <hello-world />
+  <SearchBar1/>
 </template>
 
 <script>
-import HelloWorld from '../components/HelloWorld'
+import SearchBar1 from '../components/SearchBar1'
 
 export default {
   name: 'Home',
 
   components: {
-    HelloWorld
+    SearchBar1
   }
 }
 </script>
