@@ -1,11 +1,16 @@
 <template>
-  <v-flex xs12 md4 lg3>
-    <v-card>
+  <v-flex xs12 md4 lg3 mx-3 my-2>
+    <v-card primary class='px-5 py-5'
+    @click.prevent="goToPokemonPage"
+    >
       <v-responsive class="p3">
-        <v-img> </v-img>
+        <v-img
+        :src="pokemonData.sprites.other['official-artwork'].front_default"
+        >
+        </v-img>
       </v-responsive>
+      <h2 class="text-center">{{nameCapitalized}}</h2>
     </v-card>
-    <p v-if="pokemonData">{{ JSON.stringify(pokemonData) }}</p>
   </v-flex>
 </template>
 
@@ -26,6 +31,14 @@ export default {
         console.log(newValue, '<< new value')
         this.pokemonData = newValue
       }
+    },
+    nameCapitalized () {
+      return `${this.pokemonData.name[0].toUpperCase()}${this.pokemonData.name.slice(1)}`
+    }
+  },
+  methods: {
+    goToPokemonPage () {
+      this.$router.push({ path: '/pokemon', query: { pokemon: this.pokemonNameProp } })
     }
   },
   async created () {
@@ -34,5 +47,8 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+h2 {
+  padding-bottom: 20px;
+}
 </style>
