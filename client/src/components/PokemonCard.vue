@@ -1,6 +1,6 @@
 <template>
   <v-flex xs12 md4 lg3 mx-3 my-2>
-    <v-card primary class='px-5 py-5'
+    <v-card primary class='px-5 py-5 mx-10 my-5'
     @click.prevent="goToPokemonPage"
     >
       <v-responsive class="p3">

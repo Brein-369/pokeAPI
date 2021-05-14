@@ -4,7 +4,7 @@
       <v-col cols="12" v-if="!searchInput.length || animated">
         <v-img
           :src="'http://pngimg.com/uploads/pokeball/small/pokeball_PNG7.png'"
-          class="my-3"
+          class="my-15"
           :class="{'shake' : animated}"
           contain
           height="200"
@@ -22,7 +22,7 @@
       <v-col class="mb-4">
         <h1 class="display-2 font-weight-bold mb-3">PokemonDex</h1>
 
-        <p class="subheading font-weight-regular">Find any pokemon you love</p>
+        <p class="subheading font-weight-regular">Find any pokemon you like</p>
       </v-col>
 
       <v-col class="mb-5" cols="12">
@@ -38,6 +38,7 @@
           solo
           :items="allNames"
           v-model="searchInput"
+          label="Try search 'bulbasaur'"
         ></v-autocomplete>
       </v-col>
     </v-row>
@@ -62,19 +63,12 @@ export default {
   data: () => ({
     searchInput: [],
     animated: false
-    // temporarySearchList: [],
-    // seachList: []
   }),
   computed: {
     ...mapState({
       allNames: 'allNames'
     })
-    // findAllPokemonDataFromInput (searchInput) {
-    //   this.$store.dispatch('findAllPokemonInput', searchInput)
-    // }
   },
-  methods: {},
-  watched: {},
   created () {
     this.$store.dispatch('getAllNames')
   },

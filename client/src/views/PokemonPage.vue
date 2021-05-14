@@ -3,7 +3,7 @@
   >
     <v-card class='px-5 py-5'>
       <v-layout row class="my-5 px-5" >
-
+        <!--left side of large view-->
         <v-flex xs12 sm6 md6 lg6 pr-3>
           <v-responsive class="p3">
             <v-img
@@ -13,9 +13,38 @@
           </v-responsive>
           <h1 class="text-center mb-5"
           :class="{'display-2': $vuetify.breakpoint. smAndDown, 'display-3': $vuetify.breakpoint. mdAndUp}"
-          >{{nameCapitalized}}
+          ><v-icon
+            x-large
+            color="#0c5487"
+            >mdi-pokeball
+          </v-icon>{{nameCapitalized}}
+          <v-icon
+            x-large
+            color="#0c5487"
+            >mdi-pokeball
+          </v-icon>
           </h1>
-          <v-card dark color="#013457" class="mb-5 px-15 py-15" justify="center">
+          <!--EVOLUTION PART-->
+          <v-layout row wrap class="mt-10">
+            <v-flex xs12 sm12 md4 lg4 v-for="evo in pokemonEvolutionNamesAndId" :key="evo.id" @click.prevent="goToPokemonPage(evo.name)">
+              <v-col class="d-flex justify-center">
+                <v-avatar
+                size="130"
+                color="#c2e3f2"
+                >
+                  <img
+                    :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/'+evo.id+'.png'"
+                    :alt="'evopic '+evo.id"
+                  >
+                </v-avatar>
+              </v-col>
+              <v-col class="d-flex justify-center">
+                <h3>{{evo.name[0].toUpperCase()+evo.name.slice(1)}}</h3>
+              </v-col>
+            </v-flex>
+          </v-layout>
+          <!--MINI INFO BLUE CARD PART-->
+          <v-card dark color="#0c5487" class="my-5 px-15 py-15 rounded-card" justify="center" rounded="30">
             <v-row justify="center">
               <v-col class="d-flex justify-center">
                 <v-icon
@@ -51,7 +80,9 @@
             </v-row>
           </v-card>
         </v-flex>
+        <!--right side of large view-->
         <v-flex xs12 sm6 md6 lg6 pl-3>
+          <!--TYPE-->
           <v-row>
             <v-col cols="12">
             <h3>Type</h3>
@@ -61,16 +92,18 @@
             >
             </PokemonTypeBox>
           </v-row>
-          <v-row>
+          <!--MOVES-->
+          <v-row class="mt-10">
             <v-col cols="12">
-            <h3>Moves</h3>
+              <h3>Moves</h3>
             </v-col>
             <v-btn x-small class="mx-2 my-2" v-for="move in pokemonData.moves"
             :key= "move"
             >{{move.move.name}}
             </v-btn>
           </v-row>
-          <v-row>
+          <!--STATS-->
+          <v-row class="mt-10">
             <v-col cols="12">
               <h3>Stats</h3>
             </v-col>
@@ -101,10 +134,25 @@ import PokemonTypeBox from '../components/PokemonTypeBox'
 
 export default {
   data: () => ({
-    pokemonData: null
+    pokemonData: null,
+    pokemonSpeciesData: null,
+    pokemonEvolutionChainData: null,
+    pokemonEvolutionNamesAndId: null
   }),
   components: {
     PokemonTypeBox
+  },
+  methods: {
+    goToPokemonPage (pokemonName) {
+      this.$router.push({ path: '/pokemon', query: { pokemon: pokemonName } })
+    }
+  },
+  watch: {
+    $route (to, from) {
+      if (to !== from) {
+        location.reload()
+      }
+    }
   },
   computed: {
     // used to make pokemon data reactive after data returned from created
@@ -115,6 +163,46 @@ export default {
       set (newValue) {
         console.log(newValue, '<< new value')
         this.pokemonData = newValue
+      }
+    },
+    computedPokemonSpeciesData: {
+      get () {
+        return this.pokemonSpeciesData
+      },
+      set (newValue) {
+        console.log(newValue, '<< new species value')
+        this.pokemonSpeciesData = newValue
+      }
+    },
+    computedPokemonEvolutionChainData: {
+      get () {
+        return this.pokemonEvolutionNamesAndId
+      },
+      set (newValue) {
+        console.log(newValue, '<< new evolution value')
+        this.pokemonEvolutionChainData = newValue
+        const evoNamesAndId = []
+        function checkEvolve (pokemon) {
+          if (!pokemon.evolves_to.length) {
+            // adding name and id pokemon
+            const obj = {
+              id: pokemon.species.url.split('/')[6],
+              name: pokemon.species.name
+            }
+            evoNamesAndId.push(obj)
+          } else {
+            // adding name and id pokemon
+            const obj = {
+              id: pokemon.species.url.split('/')[6],
+              name: pokemon.species.name
+            }
+            evoNamesAndId.push(obj)
+            checkEvolve(pokemon.evolves_to[0])
+          }
+        }
+        checkEvolve(this.pokemonEvolutionChainData.chain)
+        console.log(evoNamesAndId)
+        this.pokemonEvolutionNamesAndId = evoNamesAndId
       }
     },
     nameCapitalized () {
@@ -134,8 +222,9 @@ export default {
     }
   },
   async created () {
-    console.log(this.$route.query.pokemon)
     this.computedPokemonData = await this.$store.dispatch('getOnePokemonData', this.$route.query.pokemon)
+    this.computedPokemonSpeciesData = await this.$store.dispatch('getOnePokemonSpeciesData', this.pokemonData.species.url)
+    this.computedPokemonEvolutionChainData = await this.$store.dispatch('getOnePokemonEvolutionData', this.pokemonSpeciesData.evolution_chain.url)
   }
 }
 </script>

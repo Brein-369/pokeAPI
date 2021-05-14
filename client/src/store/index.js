@@ -34,6 +34,28 @@ export default new Vuex.Store({
       }).catch(err => {
         console.log(err.response.data)
       })
+    },
+    getOnePokemonSpeciesData (context, speciesUrl) {
+      const speciesId = speciesUrl.split('/')[6]
+      return axios({
+        url: `/pokemon-species/${speciesId}`,
+        method: 'get'
+      }).then(response => {
+        return response.data
+      }).catch(err => {
+        console.log(err.response.data)
+      })
+    },
+    getOnePokemonEvolutionData (context, evoUrl) {
+      const evoId = evoUrl.split('/')[6]
+      return axios({
+        url: `/evolution-chain/${evoId}`,
+        method: 'get'
+      }).then(response => {
+        return response.data
+      }).catch(err => {
+        console.log(err.response.data)
+      })
     }
   },
   modules: {
