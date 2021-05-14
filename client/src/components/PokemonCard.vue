@@ -28,7 +28,6 @@ export default {
         return this.pokemonData
       },
       set (newValue) {
-        console.log(newValue, '<< new value')
         this.pokemonData = newValue
       }
     },

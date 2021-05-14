@@ -161,7 +161,6 @@ export default {
         return this.pokemonData
       },
       set (newValue) {
-        console.log(newValue, '<< new value')
         this.pokemonData = newValue
       }
     },
@@ -170,7 +169,6 @@ export default {
         return this.pokemonSpeciesData
       },
       set (newValue) {
-        console.log(newValue, '<< new species value')
         this.pokemonSpeciesData = newValue
       }
     },
@@ -179,7 +177,6 @@ export default {
         return this.pokemonEvolutionNamesAndId
       },
       set (newValue) {
-        console.log(newValue, '<< new evolution value')
         this.pokemonEvolutionChainData = newValue
         const evoNamesAndId = []
         function checkEvolve (pokemon) {
@@ -201,7 +198,6 @@ export default {
           }
         }
         checkEvolve(this.pokemonEvolutionChainData.chain)
-        console.log(evoNamesAndId)
         this.pokemonEvolutionNamesAndId = evoNamesAndId
       }
     },
